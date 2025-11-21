@@ -1,0 +1,66 @@
+graph TD
+    subgraph Inputs ["1. Input Sources"]
+        PDF[PDFs]
+        Web[Web Pages]
+        Notes[Notes]
+    end
+
+    subgraph Prep ["2. Preprocessing"]
+        Clean[Cleaning]
+        Chunk[Semantic Chunking]
+    end
+
+    subgraph Store ["3. Knowledge Store"]
+        Vector[Dense Vector]
+        Keyword[Sparse Keyword]
+        Rerank[Reranker]
+    end
+
+    subgraph Brain ["4. LangGraph Brain"]
+        Start((Start))
+        Planner[Planner Node]
+        Retrieve[Retrieval Node]
+        Explain[Explanation Node]
+        Quiz[Quiz Node]
+        Flashcard[Flashcard Node]
+        Plan[Study Plan Node]
+        Validate[Validation Node]
+        End((End))
+    end
+
+    subgraph Tools ["5. Tool Layer"]
+        SearchTool[Search Tool]
+        CalcTool[Calculator]
+        MCP[MCP Servers]
+    end
+
+    subgraph Memory ["6. Memory Layer"]
+        Episodic[Episodic Memory]
+        UserProf[User Profile]
+    end
+
+    subgraph Output ["7. Output Layer"]
+        Response[Final Response]
+    end
+
+    %% Data Flow
+    Inputs --> Prep
+    Prep --> Store
+    Store <--> Retrieve
+
+    %% Agent Flow
+    Start --> Planner
+    Planner --> Retrieve
+    Retrieve --> Explain & Quiz & Flashcard & Plan
+    Explain --> Validate
+    Quiz --> Validate
+    Flashcard --> Validate
+    Plan --> Validate
+    Validate --> End
+    End --> Response
+
+    %% Tool Usage
+    Brain -.-> Tools
+
+    %% Memory Usage
+    Brain <--> Memory
