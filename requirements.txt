@@ -10,3 +10,5 @@ beautifulsoup4
 pypdf
 faiss-cpu
 rank_bm25
+langchain-community
+langchain-experimental
