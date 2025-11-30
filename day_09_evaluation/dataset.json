@@ -1,0 +1,14 @@
+[
+    {
+        "question": "What is LangChain?",
+        "ground_truth": "LangChain is a framework for developing applications powered by language models. It enables applications that are context-aware and can reason."
+    },
+    {
+        "question": "What is Semantic Chunking?",
+        "ground_truth": "Semantic Chunking is a technique to split text based on meaning, using embeddings to find breakpoints where the topic changes, rather than splitting by a fixed number of characters."
+    },
+    {
+        "question": "What is RAG?",
+        "ground_truth": "RAG (Retrieval Augmented Generation) is a technique that combines retrieval and generation. It retrieves relevant documents from a knowledge base and passes them as context to an LLM to generate an accurate response."
+    }
+]
