@@ -3,27 +3,22 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from day_07_planning.models import StudyPlan
 
-def generate_study_plan(topic: str, duration: str, retriever: BaseRetriever) -> StudyPlan:
+def generate_study_plan(topic: str, duration: str, retriever: BaseRetriever = None) -> StudyPlan:
     """
-    Generates a study plan for a given topic and duration using RAG and structured output.
-    
-    Args:
-        topic (str): The topic to study.
-        duration (str): The available time (e.g., "2 hours", "3 days").
-        retriever (BaseRetriever): The retriever to use for finding relevant context.
-        
-    Returns:
-        StudyPlan: The generated study plan.
+    Generates a study plan for a given topic and duration using RAG (optional) and structured output.
     """
     print(f"\n📅 Generating study plan for topic: {topic} ({duration})")
     
-    # 1. retrieve relevant chunks
-    print("--- Retrieving relevant context ---")
-    docs = retriever.invoke(topic)
-    print(f"✅ Retrieved {len(docs)} chunks.")
-    
-    # 2. combine context
-    context = "\n\n".join([doc.page_content for doc in docs])
+    context = ""
+    if retriever:
+        # 1. retrieve relevant chunks
+        print("--- Retrieving relevant context ---")
+        docs = retriever.invoke(topic)
+        print(f"✅ Retrieved {len(docs)} chunks.")
+        # 2. combine context
+        context = "\n\n".join([doc.page_content for doc in docs])
+    else:
+        print("--- No retriever provided. Using LLM knowledge. ---")
     
     # 3. create prompt
     template = """You are an expert study planner helping a student master a topic.

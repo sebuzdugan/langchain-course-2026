@@ -53,23 +53,53 @@ def memory_node(state: AgentState):
         "steps": ["Saved Memory"]
     }
 
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+
 def chat_node(state: AgentState):
     """
-    Generates a response using context and memories.
+    Generates a response using context and memories via a real LLM.
     """
     memories = state.get("memories", [])
     memory_context = "\n".join([f"- {m}" for m in memories])
     
     print(f"--- Chat Node (Context: {len(memories)} facts) ---")
     
-    # Simulate LLM generation using memory
-    if memory_context:
-        answer = f"Based on what I know about you:\n{memory_context}\n\nResponding to: {state['question']}"
-    else:
-        answer = f"I don't know much about you yet. Responding to: {state['question']}"
+    # Initialize LLM
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+    
+    context = state.get("context", "")
+    
+    system_prompt = """You are a helpful AI Learning Assistant.
+    
+    Your goal is to help the user learn based on their questions.
+    
+    Here is what you know about the user (Semantic Memory):
+    {memory_context}
+    
+    Here is some relevant context from the uploaded documents (if any):
+    {context}
+    
+    If the user asks a question, answer it helpfully.
+    If the memory context is relevant, refer to it.
+    If the document context is relevant, use it to answer the question.
+    """
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        ("human", "{question}")
+    ])
+    
+    chain = prompt | llm
+    
+    response = chain.invoke({
+        "memory_context": memory_context if memory_context else "No specific facts known yet.",
+        "context": context if context else "No document context available.",
+        "question": state["question"]
+    })
         
     return {
-        "answer": answer,
+        "answer": response.content,
         "steps": ["Chatted"]
     }
 

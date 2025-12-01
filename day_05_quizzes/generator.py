@@ -3,26 +3,22 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from day_05_quizzes.models import Quiz
 
-def generate_quiz(topic: str, retriever: BaseRetriever) -> Quiz:
+def generate_quiz(topic: str, retriever: BaseRetriever = None) -> Quiz:
     """
-    Generates a quiz for a given topic using RAG and structured output.
-    
-    Args:
-        topic (str): The topic to generate a quiz for.
-        retriever (BaseRetriever): The retriever to use for finding relevant context.
-        
-    Returns:
-        Quiz: The generated quiz object.
+    Generates a quiz for a given topic using RAG (optional) and structured output.
     """
     print(f"\n📝 Generating quiz for topic: {topic}")
     
-    # 1. retrieve relevant chunks
-    print("--- Retrieving relevant context ---")
-    docs = retriever.invoke(topic)
-    print(f"✅ Retrieved {len(docs)} chunks.")
-    
-    # 2. combine context
-    context = "\n\n".join([doc.page_content for doc in docs])
+    context = ""
+    if retriever:
+        # 1. retrieve relevant chunks
+        print("--- Retrieving relevant context ---")
+        docs = retriever.invoke(topic)
+        print(f"✅ Retrieved {len(docs)} chunks.")
+        # 2. combine context
+        context = "\n\n".join([doc.page_content for doc in docs])
+    else:
+        print("--- No retriever provided. Using LLM knowledge. ---")
     
     # 3. create prompt
     template = """You are an expert teacher creating a quiz to test student understanding.

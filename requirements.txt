@@ -13,3 +13,4 @@ rank_bm25
 langchain-community
 langchain-experimental
 langgraph-checkpoint-sqlite
+streamlit

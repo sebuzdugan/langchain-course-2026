@@ -4,6 +4,7 @@ from typing_extensions import TypedDict
 
 class InputState(TypedDict):
     question: str
+    context: Optional[str]
 
 class OutputState(TypedDict):
     answer: str
@@ -11,6 +12,7 @@ class OutputState(TypedDict):
 
 class AgentState(TypedDict):
     question: str
+    context: Optional[str]
     intent: str 
     
     # content fields
